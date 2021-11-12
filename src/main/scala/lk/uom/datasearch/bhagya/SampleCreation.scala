@@ -36,8 +36,6 @@ object SampleCreation {
         to_date(col("CALL_TIME"), "yyyyMMddHHmmss").as("CALL_TIMESTAMP"),
         col("INDEX_1KM")
       )
-    println("cdrDF : ")
-    cdrDF.select("*").show()
 
     val locationsCsvDF = spark.read.option("header", "true").csv(locationsCsv)
       .select(
@@ -50,24 +48,16 @@ object SampleCreation {
         col("DS_NAME"),
         col("BTS_AREA")
       )
-    println("locationsCsvDF : ")
-    locationsCsvDF.select("*").show()
 
     val locationsDF = spark.read.option("header", "true").csv(locationsCsv)
       .select(
         col("LOCATION_ID"),
         col("PROVINCE_NAME")
       )
-    println("locationsDF : ")
-    locationsDF.select("*").show()
 
     val selectedAreaDF = locationsDF.filter(col("PROVINCE_NAME").equalTo("Western"))
-    println("selectedAreaDF : ")
-    selectedAreaDF.select("*").show()
 
     val pickedTimeIntervalDF = cdrDF.filter(col("CALL_TIMESTAMP").between(startDate, endDate))
-    println("pickedTimeIntervalDF : ")
-    pickedTimeIntervalDF.select("*").show()
 
     val restrictedToAreaDF = pickedTimeIntervalDF
       .join(selectedAreaDF, selectedAreaDF("LOCATION_ID") === pickedTimeIntervalDF("INDEX_1KM"))
@@ -76,8 +66,6 @@ object SampleCreation {
         col("CALL_TIMESTAMP"),
         col("LOCATION_ID")
       )
-    println("restrictedToAreaDF : ")
-    restrictedToAreaDF.select("*").show()
 
     val countCallsPerDaysDF = restrictedToAreaDF
       .select(
@@ -86,23 +74,15 @@ object SampleCreation {
           .as("DAY")
       )
       .groupBy(col("SUBSCRIBER_ID"), col("DAY")).count()
-    println("countCallsPerDaysDF : ")
-    countCallsPerDaysDF.select("*").show()
 
     val usersWithCDREveryDay = countCallsPerDaysDF.groupBy(col("SUBSCRIBER_ID")).sum("DAY")
       .filter(col("DAY").equalTo("6107"))
-    println("usersWithCDREveryDay : ")
-    usersWithCDREveryDay.select("*").show()
 
     val filteredAllUsers = usersWithCDREveryDay.select(col("SUBSCRIBER_ID") as "FILT_SUBSCRIBER_ID").distinct()
-    println("filteredAllUsers : ")
-    filteredAllUsers.select("*").show()
 
     // Restricting to random n, users
     // Renaming column to avoid duplication in next step
     val randomlyPickedUsers = filteredAllUsers.orderBy(rand()).limit(userCount)
-    println("randomlyPickedUsers : ")
-    randomlyPickedUsers.select("*").show()
 
     val cdrForRandomlyPickedUsers = restrictedToAreaDF.
       join(randomlyPickedUsers, randomlyPickedUsers("FILT_SUBSCRIBER_ID") === restrictedToAreaDF("SUBSCRIBER_ID"))
@@ -111,8 +91,6 @@ object SampleCreation {
         col("CALL_TIMESTAMP"),
         col("LOCATION_ID")
       )
-    println("cdrForRandomlyPickedUsers : ")
-    cdrForRandomlyPickedUsers.select("*").show()
 
     val cdrForRandomlyPickedUsersWithLocationDetails = cdrForRandomlyPickedUsers.
       join(locationsCsvDF, locationsCsvDF("LOCATION_ID_CSV") === cdrForRandomlyPickedUsers("LOCATION_ID"))
@@ -128,8 +106,6 @@ object SampleCreation {
         col("DS_NAME"),
         col("BTS_AREA")
       )
-    println("cdrForRandomlyPickedUsersWithLocationDetails : ")
-    cdrForRandomlyPickedUsersWithLocationDetails.select("*").show()
 
     // Writing Output
     cdrForRandomlyPickedUsersWithLocationDetails.coalesce(1).write.option("header", "true").csv(outputLocation)
