@@ -24,7 +24,7 @@ object SampleCreation {
 
     val dataDirectory = dataRoot + "/generated_voice_records_20130601_20131201"
     val locationsCsv = dataRoot + "/1K_CELL_CENTERS_ALL.CSV"
-    val outputLocation = "/MSC/buddhi13/bhagya/cdr/output/400K-SampleForWesternProvince.csv"
+    val outputLocation = "/MSC/buddhi13/bhagya/cdr/output/400K-SampleForWesternProvince"
     val startDate = "2013-07-01"
     val endDate = "2013-07-31"
     val userCount = 400000
@@ -76,7 +76,7 @@ object SampleCreation {
       .groupBy(col("SUBSCRIBER_ID"), col("DAY")).count()
 
     val usersWithCDREveryDay = countCallsPerDaysDF.groupBy(col("SUBSCRIBER_ID")).sum("DAY")
-      .filter(col("DAY").equalTo("6107"))
+      .filter(col("sum(DAY)").equalTo("6107"))
 
     val filteredAllUsers = usersWithCDREveryDay.select(col("SUBSCRIBER_ID") as "FILT_SUBSCRIBER_ID").distinct()
 
