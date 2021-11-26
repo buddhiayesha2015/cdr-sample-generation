@@ -3,7 +3,7 @@ package lk.uom.datasearch.bhagya
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions.{rand, _}
 
-object SampleCreation {
+object SampleCreationWithFilter {
 
   /*
    * Run on server:
@@ -33,7 +33,7 @@ object SampleCreation {
     var cdrDF = spark.read.parquet(dataDirectory)
       .select(
         col("SUBSCRIBER_ID"),
-        to_date(col("CALL_TIME"), "yyyyMMddHHmmss").as("CALL_TIMESTAMP"),
+        to_timestamp(col("CALL_TIME"), "yyyyMMddHHmmss").as("CALL_TIMESTAMP"),
         col("INDEX_1KM")
       )
 
