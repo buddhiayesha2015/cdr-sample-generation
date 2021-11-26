@@ -33,7 +33,8 @@ object SampleCreationWithFilter {
     var cdrDF = spark.read.parquet(dataDirectory)
       .select(
         col("SUBSCRIBER_ID"),
-        to_timestamp(col("CALL_TIME"), "yyyyMMddHHmmss").as("CALL_TIMESTAMP"),
+        to_date(col("CALL_TIME"), "yyyyMMddHHmmss").as("CALL_TIMESTAMP"),
+        col("CALL_TIME"),
         col("INDEX_1KM")
       )
 
@@ -64,6 +65,7 @@ object SampleCreationWithFilter {
       .select(
         col("SUBSCRIBER_ID"),
         col("CALL_TIMESTAMP"),
+        col("CALL_TIME"),
         col("LOCATION_ID")
       )
 
@@ -88,7 +90,7 @@ object SampleCreationWithFilter {
       join(randomlyPickedUsers, randomlyPickedUsers("FILT_SUBSCRIBER_ID") === restrictedToAreaDF("SUBSCRIBER_ID"))
       .select(
         col("SUBSCRIBER_ID"),
-        col("CALL_TIMESTAMP"),
+        col("CALL_TIME"),
         col("LOCATION_ID")
       )
 
@@ -96,7 +98,7 @@ object SampleCreationWithFilter {
       join(locationsCsvDF, locationsCsvDF("LOCATION_ID_CSV") === cdrForRandomlyPickedUsers("LOCATION_ID"))
       .select(
         col("SUBSCRIBER_ID"),
-        col("CALL_TIMESTAMP"),
+        col("CALL_TIME"),
         col("LOCATION_ID"),
         col("LONGITUDE"),
         col("LATITUDE"),
