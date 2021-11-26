@@ -19,7 +19,7 @@ lazy val commonSettings = Seq(
 lazy val app = (project in file(".")).
   settings(commonSettings: _*).
   settings(
-    mainClass in assembly := Some("lk.uom.datasearch.bhagya.SampleCreation"),
+    mainClass in assembly := Some("lk.uom.datasearch.bhagya.SampleCreationWithFilter"),
     assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
   )
 
