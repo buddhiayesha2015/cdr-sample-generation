@@ -24,7 +24,7 @@ object SampleCreationWithFilter {
 
     val dataDirectory = dataRoot + "/generated_voice_records_20130601_20131201"
     val locationsCsv = dataRoot + "/1K_CELL_CENTERS_ALL.CSV"
-    val outputLocation = "/MSC/buddhi13/bhagya/cdr/output/400K-SampleForWesternProvince"
+    val outputLocation = "/MSC/buddhi13/bhagya/cdr/output/400K-SampleWithFilterForWesternProvince"
     val startDate = "2013-07-01"
     val endDate = "2013-07-31"
     val userCount = 400000
