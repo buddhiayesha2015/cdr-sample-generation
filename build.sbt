@@ -1,6 +1,6 @@
 name := "cdr-sample-generation"
 
-version := "14"
+version := "15"
 
 scalaVersion := "2.11.8"
 
